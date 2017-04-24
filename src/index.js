@@ -25,6 +25,18 @@ bookRouter.route('/books')
 			res.json(booksArray);
 	});
 
+bookRouter.route('/books/:bookid')
+	.get((req, res) => {
+		if(req.params.bookid)
+			res.json(
+				booksArray.find(book => {
+					if(req.params.bookid == book.id)
+						return book;
+					}));
+		else
+			res.json(booksArray);
+	});
+
 app.use('/api', bookRouter);
 
 app.get('/', (req, res) => {
