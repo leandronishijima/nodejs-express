@@ -1,5 +1,6 @@
 var gulp = require('gulp');
-	nodemon = require('gulp-nodemon');
+var babel = require('gulp-babel');
+var nodemon = require('gulp-nodemon');
 
 gulp.task('default', function() {
 	nodemon({
@@ -9,7 +10,7 @@ gulp.task('default', function() {
 			PORT: 3000
 		},
 		ignore: ['/node_modules/**']
-	});
+	})
 	.on('restart', function() {
 		console.log('Restarting');
 	});
