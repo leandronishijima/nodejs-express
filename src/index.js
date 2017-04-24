@@ -1,9 +1,11 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import Book from '../src/models/Book.js';
 
 const app = express();
 
-app.use(express.static('public'));
-app.use(express.static('src/views'));
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 
 const booksArray = [
 	{ id: '1', title: 'Book 1', author: 'Author 1' },
@@ -16,11 +18,18 @@ const booksArray = [
 const bookRouter = express.Router();
 
 bookRouter.route('/books')
+	.post((req, res) => {
+		let bodyRequest = req.body;
+
+		console.log(bodyRequest);
+		booksArray.push(bodyRequest);
+
+		res.json(bodyRequest);
+	})
 	.get((req, res) => {
 		if(req.query.title)
 			res.json(booksArray
-					.filter(book => { 
-						if(req.query.title == book.title) return book }));
+						.filter(book => req.query.title == book.title));
 		else
 			res.json(booksArray);
 	});
@@ -28,11 +37,8 @@ bookRouter.route('/books')
 bookRouter.route('/books/:bookid')
 	.get((req, res) => {
 		if(req.params.bookid)
-			res.json(
-				booksArray.find(book => {
-					if(req.params.bookid == book.id)
-						return book;
-					}));
+			res.json(booksArray
+						.find(book => req.params.bookid == book.id));
 		else
 			res.json(booksArray);
 	});
