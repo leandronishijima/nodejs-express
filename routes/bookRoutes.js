@@ -11,13 +11,9 @@ class BookRouter {
 			{ id: '4', title: 'Book 4', author: 'Author 4' },
 			{ id: '5', title: 'Book 5', author: 'Author 5' }];
 
-		let app = express();
-		app.use(bodyParser.urlencoded({extended:true}));
-		app.use(bodyParser.json());
-
 		let bookRouter = express.Router();
 
-		bookRouter.route('/books')
+		bookRouter.route('/')
 			.post((req, res) => {
 				let bodyRequest = req.body;
 
@@ -34,13 +30,23 @@ class BookRouter {
 					res.json(booksArray);
 			});
 
-		bookRouter.route('/books/:bookid')
+		bookRouter.route('/:bookid')
 			.get((req, res) => {
 				if(req.params.bookid)
 					res.json(booksArray
 								.find(book => req.params.bookid == book.id));
 				else
 					res.json(booksArray);
+			})
+			.put((req, res) => {
+				let book = booksArray.find(book => req.params.bookid == book.id);
+
+				console.log(book);
+
+				book.title = req.body.title;
+				book.author = req.body.author;
+
+				res.json(book);
 			});
 
 		return bookRouter;
