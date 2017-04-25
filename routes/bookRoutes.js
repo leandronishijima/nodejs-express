@@ -17,7 +17,6 @@ class BookRouter {
 			.post((req, res) => {
 				let bodyRequest = req.body;
 
-				console.log(bodyRequest);
 				booksArray.push(bodyRequest);
 
 				res.json(bodyRequest);
@@ -30,18 +29,25 @@ class BookRouter {
 					res.json(booksArray);
 			});
 
+		bookRouter.use('/:bookid', (req, res, next) => {
+			let book = booksArray.find(book => req.params.bookid == book.id);
+
+			if(book) {
+				req.book = book;
+				next();
+			} else
+				res.status(404).send('no book found');
+		});
+
 		bookRouter.route('/:bookid')
 			.get((req, res) => {
 				if(req.params.bookid)
-					res.json(booksArray
-								.find(book => req.params.bookid == book.id));
+					res.json(req.book);
 				else
 					res.json(booksArray);
 			})
 			.put((req, res) => {
-				let book = booksArray.find(book => req.params.bookid == book.id);
-
-				console.log(book);
+				let book = req.book;
 
 				book.title = req.body.title;
 				book.author = req.body.author;
